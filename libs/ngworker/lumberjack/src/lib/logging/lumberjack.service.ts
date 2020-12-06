@@ -33,18 +33,21 @@ export class LumberjackService {
     this.drivers = Array.isArray(drivers) ? drivers : [drivers];
   }
 
-  log(logParameter: LumberjackLog): void {
+  log<TLog extends LumberjackLog = LumberjackLog>(logParameter: TLog): void {
     const { log, formattedLog } = this.logFormatter.formatLog(logParameter);
 
     this.logWithHandleErrors(log, formattedLog, this.drivers);
   }
 
   private canDriveLog(driver: LumberjackLogDriver, logLevel: LumberjackLogLevel): boolean {
-    return (
-      driver.config.levels === undefined ||
-      (driver.config.levels.length === 1 && driver.config.levels[0] === LumberjackLevel.Verbose) ||
-      (driver.config.levels as LumberjackLogLevel[]).includes(logLevel)
-    );
+    const {
+      config: { levels: driverConfigLevels },
+    } = driver;
+
+    const isVerboseDriver = driverConfigLevels.length === 1 && driverConfigLevels[0] === LumberjackLevel.Verbose;
+    const isLogLevelEnabled = (driverConfigLevels as LumberjackLogLevel[]).includes(logLevel);
+
+    return isVerboseDriver || isLogLevelEnabled;
   }
 
   private createDriverErrorLog(driverError: LumberjackLogDriverError): LumberjackLog {
@@ -66,21 +69,27 @@ export class LumberjackService {
     switch (driverLog.log.level) {
       case LumberjackLevel.Critical:
         driver.logCritical(driverLog);
+
         break;
       case LumberjackLevel.Debug:
         driver.logDebug(driverLog);
+
         break;
       case LumberjackLevel.Error:
         driver.logError(driverLog);
+
         break;
       case LumberjackLevel.Info:
         driver.logInfo(driverLog);
+
         break;
       case LumberjackLevel.Trace:
         driver.logTrace(driverLog);
+
         break;
       case LumberjackLevel.Warning:
         driver.logWarning(driverLog);
+
         break;
     }
   }
