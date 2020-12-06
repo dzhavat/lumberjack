@@ -4,39 +4,70 @@ import { LumberjackLevel } from '../logs/lumberjack-level';
 import { LumberjackLogLevel } from '../logs/lumberjack-log-level';
 import { LumberjackTimeService } from '../time/lumberjack-time.service';
 
+import { LumberjackLoggerFactoryArguments } from './lumberjack-logger-factory-arguments';
 import { LumberjackService } from './lumberjack.service';
 
+// tslint:disable-next-line: no-any
+interface InternalLoggerFactoryArguments<TCustomLog extends Record<string, any> | undefined = undefined>
+  extends LumberjackLoggerFactoryArguments<TCustomLog> {
+  readonly logLevel: LumberjackLogLevel;
+}
+
 @Injectable()
-export abstract class LumberjackLogger {
-  constructor(private lumberjack: LumberjackService, private time: LumberjackTimeService) {}
+// tslint:disable-next-line: no-any
+export abstract class LumberjackLogger<TCustomLog extends Record<string, any> | undefined = undefined> {
+  constructor(private lumberjack: LumberjackService<TCustomLog>, private time: LumberjackTimeService) {}
 
-  protected createCriticalLogger(message: string, context?: string): () => void {
-    return this.createLogger(LumberjackLevel.Critical, message, context);
+  protected createCriticalLogger(args: LumberjackLoggerFactoryArguments<TCustomLog>): () => void {
+    return this.createLogger({
+      ...args,
+      logLevel: LumberjackLevel.Critical,
+    });
   }
 
-  protected createDebugLogger(message: string, context?: string): () => void {
-    return this.createLogger(LumberjackLevel.Debug, message, context);
+  protected createDebugLogger(args: LumberjackLoggerFactoryArguments<TCustomLog>): () => void {
+    return this.createLogger({
+      ...args,
+      logLevel: LumberjackLevel.Debug,
+    });
   }
 
-  protected createErrorLogger(message: string, context?: string): () => void {
-    return this.createLogger(LumberjackLevel.Error, message, context);
+  protected createErrorLogger(args: LumberjackLoggerFactoryArguments<TCustomLog>): () => void {
+    return this.createLogger({
+      ...args,
+      logLevel: LumberjackLevel.Error,
+    });
   }
 
-  protected createInfoLogger(message: string, context?: string): () => void {
-    return this.createLogger(LumberjackLevel.Info, message, context);
+  protected createInfoLogger(args: LumberjackLoggerFactoryArguments<TCustomLog>): () => void {
+    return this.createLogger({
+      ...args,
+      logLevel: LumberjackLevel.Info,
+    });
   }
 
-  protected createTraceLogger(message: string, context?: string): () => void {
-    return this.createLogger(LumberjackLevel.Trace, message, context);
+  protected createTraceLogger(args: LumberjackLoggerFactoryArguments<TCustomLog>): () => void {
+    return this.createLogger({
+      ...args,
+      logLevel: LumberjackLevel.Trace,
+    });
   }
 
-  protected createWarningLogger(message: string, context?: string): () => void {
-    return this.createLogger(LumberjackLevel.Warning, message, context);
+  protected createWarningLogger(args: LumberjackLoggerFactoryArguments<TCustomLog>): () => void {
+    return this.createLogger({
+      ...args,
+      logLevel: LumberjackLevel.Warning,
+    });
   }
 
-  private createLogger(level: LumberjackLogLevel, message: string, context?: string): () => void {
+  private createLogger({
+    context = '',
+    customLog,
+    logLevel,
+    message,
+  }: InternalLoggerFactoryArguments<TCustomLog>): () => void {
     return () => {
-      this.lumberjack.log({ context, createdAt: this.time.getUnixEpochTicks(), level, message });
+      this.lumberjack.log({ context, createdAt: this.time.getUnixEpochTicks(), level: logLevel, message }, customLog);
     };
   }
 }

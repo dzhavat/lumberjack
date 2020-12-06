@@ -12,6 +12,9 @@ import { LumberjackLogLevel } from '../logs/lumberjack-log-level';
 import { LumberjackLog } from '../logs/lumberjack.log';
 import { LumberjackTimeService } from '../time/lumberjack-time.service';
 
+// tslint:disable-next-line: no-any
+export type CustomLog = Record<string, any>;
+
 /**
  * Service responsible to add logs to the applications.
  *
@@ -21,7 +24,8 @@ import { LumberjackTimeService } from '../time/lumberjack-time.service';
  *
  */
 @Injectable({ providedIn: LumberjackRootModule })
-export class LumberjackService {
+// tslint:disable-next-line: no-any
+export class LumberjackService<TCustomLog extends Record<string, any> | undefined = undefined> {
   private drivers: LumberjackLogDriver[];
 
   constructor(
@@ -33,8 +37,8 @@ export class LumberjackService {
     this.drivers = Array.isArray(drivers) ? drivers : [drivers];
   }
 
-  log<TLog extends LumberjackLog = LumberjackLog>(logParameter: TLog): void {
-    const { log, formattedLog } = this.logFormatter.formatLog(logParameter);
+  log(lumberjackLog: LumberjackLog, customLog: TCustomLog): void {
+    const { log, formattedLog } = this.logFormatter.formatLog(lumberjackLog);
 
     this.logWithHandleErrors(log, formattedLog, this.drivers);
   }
