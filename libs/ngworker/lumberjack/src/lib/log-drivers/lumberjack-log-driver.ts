@@ -5,6 +5,7 @@ import { LumberjackLogDriverLog } from './lumberjack-log-driver.log';
 
 export interface LumberjackLogDriver<TLog extends LumberjackLog = LumberjackLog> {
   readonly config: LumberjackLogDriverConfig;
+
   logCritical(driverLog: LumberjackLogDriverLog<TLog>): void;
   logDebug(driverLog: LumberjackLogDriverLog<TLog>): void;
   logError(driverLog: LumberjackLogDriverLog<TLog>): void;
