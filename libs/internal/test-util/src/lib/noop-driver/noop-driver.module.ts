@@ -2,6 +2,7 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { LumberjackLogDriverConfig } from '@ngworker/lumberjack';
 
+import { defaultNoopDriverConfig } from './default-noop-driver.config';
 import { noopDriverConfigToken } from './noop-driver-config.token';
 import { NoopDriverRootModule } from './noop-driver-root.module';
 
@@ -12,10 +13,15 @@ import { NoopDriverRootModule } from './noop-driver-root.module';
  */
 @NgModule()
 export class NoopDriverModule {
-  static forRoot(config?: LumberjackLogDriverConfig): ModuleWithProviders<NoopDriverRootModule> {
+  /**
+   * Pass a full Console driver configuration
+   */
+  static forRoot(
+    config: LumberjackLogDriverConfig = defaultNoopDriverConfig
+  ): ModuleWithProviders<NoopDriverRootModule> {
     return {
       ngModule: NoopDriverRootModule,
-      providers: (config && [{ provide: noopDriverConfigToken, useValue: config }]) || [],
+      providers: [{ provide: noopDriverConfigToken, useValue: config }],
     };
   }
 

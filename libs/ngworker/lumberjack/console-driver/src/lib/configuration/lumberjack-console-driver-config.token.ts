@@ -1,10 +1,7 @@
-import { inject, InjectionToken } from '@angular/core';
+import { InjectionToken } from '@angular/core';
 
-import { LumberjackLogDriverConfig, lumberjackLogDriverConfigToken } from '@ngworker/lumberjack';
+import { LumberjackConsoleDriverConfig } from './lumberjack-console-driver.config';
 
-export const lumberjackConsoleDriverConfigToken = new InjectionToken<LumberjackLogDriverConfig>(
-  '__LUMBERJACK_CONSOLE_DRIVER_CONFIG__',
-  {
-    factory: () => inject(lumberjackLogDriverConfigToken),
-  }
+export const lumberjackConsoleDriverConfigToken = new InjectionToken<LumberjackConsoleDriverConfig>(
+  '__LUMBERJACK_CONSOLE_DRIVER_CONFIG__'
 );

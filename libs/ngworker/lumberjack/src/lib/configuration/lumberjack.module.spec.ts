@@ -6,13 +6,13 @@ import { isProductionEnvironmentToken } from '../environment/is-production-envir
 import { utcTimestampFor } from '../formatting/utc-timestamp-for';
 import { LumberjackLevel } from '../logs/lumberjack-level';
 import { LumberjackLog } from '../logs/lumberjack.log';
-import { LumberjackTimeService } from '../time/lumberjack-time.service';
 
 import { defaultDevelopmentLevels } from './default-development-levels';
 import { defaultProductionLevels } from './default-production-levels';
 import { lumberjackConfigToken } from './lumberjack-config.token';
-import { lumberjackLogDriverConfigToken } from './lumberjack-log-driver-config.token';
+import { lumberjackLogDriverOptionsToken } from './lumberjack-log-driver-options.token';
 import { LumberjackLogDriverConfig } from './lumberjack-log-driver.config';
+import { LumberjackLogDriverOptions } from './lumberjack-log-driver.options';
 import { LumberjackConfig } from './lumberjack.config';
 import { LumberjackModule } from './lumberjack.module';
 import { LumberjackOptions } from './lumberjack.options';
@@ -104,11 +104,11 @@ describe(LumberjackModule.name, () => {
         imports: [LumberjackModule.forRoot()],
       });
       const logConfig = resolveDependency(lumberjackConfigToken);
-      const defaultLogDriverConfig: LumberjackLogDriverConfig = {
+      const defaultLogDriverConfig: LumberjackLogDriverOptions = {
         levels: logConfig.levels,
       };
 
-      const actualConfig = resolveDependency(lumberjackLogDriverConfigToken);
+      const actualConfig = resolveDependency(lumberjackLogDriverOptionsToken);
       expect(actualConfig).toEqual(defaultLogDriverConfig);
     });
 

@@ -1,15 +1,16 @@
 import { Inject, Injectable } from '@angular/core';
 
-import { LumberjackLogDriver, LumberjackLogDriverConfig } from '@ngworker/lumberjack';
+import { LumberjackLogDriver } from '@ngworker/lumberjack';
 
 import { lumberjackConsoleDriverConfigToken } from '../configuration/lumberjack-console-driver-config.token';
+import { LumberjackConsoleDriverConfig } from '../configuration/lumberjack-console-driver.config';
 import { LumberjackConsole } from '../console/lumberjack-console';
 import { lumberjackConsoleToken } from '../console/lumberjack-console.token';
 
 @Injectable()
 export class LumberjackConsoleDriver implements LumberjackLogDriver {
   constructor(
-    @Inject(lumberjackConsoleDriverConfigToken) public config: LumberjackLogDriverConfig,
+    @Inject(lumberjackConsoleDriverConfigToken) public config: LumberjackConsoleDriverConfig,
     @Inject(lumberjackConsoleToken) private console: LumberjackConsole
   ) {}
 

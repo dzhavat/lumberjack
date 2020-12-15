@@ -7,7 +7,7 @@ import {
   lumberjackConfigToken,
   LumberjackLevel,
   LumberjackLogDriver,
-  LumberjackLogDriverConfig,
+  LumberjackLogDriverOptions,
   lumberjackLogDriverToken,
   LumberjackModule,
 } from '@ngworker/lumberjack';
@@ -23,6 +23,7 @@ function createHttpOptions(): LumberjackHttpDriverOptions {
     origin: 'TEST_MODULE',
     retryOptions: { maxRetries: 5, delayMs: 250 },
     storeUrl: 'api/logstore',
+    driverGUI: LumberjackHttpDriver.name,
   };
 }
 
@@ -32,6 +33,7 @@ function createHttpConfig(levels: LumberjackConfigLevels): LumberjackHttpDriverC
     origin: 'TEST_MODULE',
     retryOptions: { maxRetries: 5, delayMs: 250 },
     storeUrl: 'api/logstore',
+    driverGUI: LumberjackHttpDriver.name,
   };
 }
 
@@ -110,10 +112,10 @@ describe(LumberjackHttpDriverModule.name, () => {
 
       const actualConfig = httpDriver.config;
       const logConfig = resolveDependency(lumberjackConfigToken);
-      const defaultLogDriverConfig: LumberjackLogDriverConfig = {
+      const defaultLogDriverOptions: LumberjackLogDriverOptions = {
         levels: logConfig.levels,
       };
-      const expectedConfig: LumberjackHttpDriverConfig = { ...defaultLogDriverConfig, ...customHttpConfig };
+      const expectedConfig: LumberjackHttpDriverConfig = { ...defaultLogDriverOptions, ...customHttpConfig };
       expect(actualConfig).toEqual(expectedConfig);
     });
 

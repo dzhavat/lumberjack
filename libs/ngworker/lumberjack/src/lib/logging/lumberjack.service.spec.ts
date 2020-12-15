@@ -17,10 +17,10 @@ import {
   SpyDriver,
   SpyDriverModule,
 } from '@internal/test-util';
-import { LumberjackConsoleDriverModule } from '@ngworker/lumberjack/console-driver';
+import { LumberjackConsoleDriver, LumberjackConsoleDriverModule } from '@ngworker/lumberjack/console-driver';
 
-import { lumberjackLogDriverConfigToken } from '../configuration/lumberjack-log-driver-config.token';
-import { LumberjackLogDriverConfig } from '../configuration/lumberjack-log-driver.config';
+import { lumberjackLogDriverOptionsToken } from '../configuration/lumberjack-log-driver-options.token';
+import { LumberjackLogDriverOptions } from '../configuration/lumberjack-log-driver.options';
 import { LumberjackModule } from '../configuration/lumberjack.module';
 import { LumberjackLogDriver } from '../log-drivers/lumberjack-log-driver';
 import { lumberjackLogDriverToken } from '../log-drivers/lumberjack-log-driver.token';
@@ -28,14 +28,14 @@ import { LumberjackLevel } from '../logs/lumberjack-level';
 
 import { LumberjackService } from './lumberjack.service';
 
-const noLogsConfig: LumberjackLogDriverConfig = {
+const noLogsConfig: LumberjackLogDriverOptions = {
   levels: [],
 };
 const noLogsProvider: StaticProvider = {
-  provide: lumberjackLogDriverConfigToken,
+  provide: lumberjackLogDriverOptionsToken,
   useValue: noLogsConfig,
 };
-const allLogsConfig: LumberjackLogDriverConfig = {
+const allLogsConfig: LumberjackLogDriverOptions = {
   levels: [
     LumberjackLevel.Critical,
     LumberjackLevel.Debug,
@@ -46,14 +46,14 @@ const allLogsConfig: LumberjackLogDriverConfig = {
   ],
 };
 const allLogsProvider: StaticProvider = {
-  provide: lumberjackLogDriverConfigToken,
+  provide: lumberjackLogDriverOptionsToken,
   useValue: allLogsConfig,
 };
-const verboseLoggingConfig: LumberjackLogDriverConfig = {
+const verboseLoggingConfig: LumberjackLogDriverOptions = {
   levels: [LumberjackLevel.Verbose],
 };
 const verboseLoggingProvider: StaticProvider = {
-  provide: lumberjackLogDriverConfigToken,
+  provide: lumberjackLogDriverOptionsToken,
   useValue: verboseLoggingConfig,
 };
 
@@ -82,7 +82,7 @@ describe(LumberjackService.name, () => {
         imports: [
           LumberjackModule.forRoot(),
           NoopDriverModule.forRoot(),
-          LumberjackConsoleDriverModule.forRoot(),
+          LumberjackConsoleDriverModule.withOptions({ driverGUI: LumberjackConsoleDriver.name }),
           NoopConsoleModule,
         ],
       });
@@ -463,9 +463,11 @@ describe(LumberjackService.name, () => {
             }),
             SpyDriverModule.forRoot({
               levels: [LumberjackLevel.Debug, LumberjackLevel.Info, LumberjackLevel.Trace],
+              driverGUI: SpyDriver.name,
             }),
             NoopDriverModule.forRoot({
               levels: [LumberjackLevel.Critical, LumberjackLevel.Error, LumberjackLevel.Warning],
+              driverGUI: NoopDriver.name,
             }),
           ],
           providers: [verboseLoggingProvider],

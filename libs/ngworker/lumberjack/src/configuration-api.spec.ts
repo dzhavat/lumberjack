@@ -7,7 +7,7 @@ import {
   lumberjackConfigToken,
   LumberjackFormatFunction,
   LumberjackLogDriverConfig,
-  lumberjackLogDriverConfigToken,
+  lumberjackLogDriverOptionsToken,
   LumberjackModule,
   LumberjackOptions,
 } from './index';
@@ -57,7 +57,7 @@ describe('Configuration API', () => {
     });
 
     it('exposes lumberjackLogDriverConfigToken', () => {
-      const sut = lumberjackLogDriverConfigToken;
+      const sut = lumberjackLogDriverOptionsToken;
 
       expect(sut).toBeInstanceOf(InjectionToken);
     });

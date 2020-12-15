@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { LumberjackLevel, LumberjackModule } from '@ngworker/lumberjack';
-import { LumberjackConsoleDriverModule } from '@ngworker/lumberjack/console-driver';
-import { LumberjackHttpDriverModule } from '@ngworker/lumberjack/http-driver';
+import { LumberjackConsoleDriver, LumberjackConsoleDriverModule } from '@ngworker/lumberjack/console-driver';
+import { LumberjackHttpDriver, LumberjackHttpDriverModule } from '@ngworker/lumberjack/http-driver';
 
 import { AppComponent } from './app.component';
 
@@ -14,12 +14,13 @@ import { AppComponent } from './app.component';
     BrowserModule,
     HttpClientModule,
     LumberjackModule.forRoot(),
-    LumberjackConsoleDriverModule.forRoot(),
+    LumberjackConsoleDriverModule.withOptions({ driverGUI: LumberjackConsoleDriver.name }),
     LumberjackHttpDriverModule.forRoot({
       levels: [LumberjackLevel.Error],
       origin: 'ForestApp',
       storeUrl: '/api/logs',
       retryOptions: { maxRetries: 5, delayMs: 250 },
+      driverGUI: LumberjackHttpDriver.name,
     }),
   ],
   providers: [],

@@ -1,15 +1,38 @@
 import { Inject, NgModule, Optional, SkipSelf } from '@angular/core';
 
-import { lumberjackLogDriverToken } from '@ngworker/lumberjack';
+import {
+  LumberjackLogDriverOptions,
+  lumberjackLogDriverOptionsToken,
+  lumberjackLogDriverToken,
+} from '@ngworker/lumberjack';
 
+import { LumberjackConsole } from '../console/lumberjack-console';
+import { lumberjackConsoleToken } from '../console/lumberjack-console.token';
 import { LumberjackConsoleDriver } from '../log-drivers/lumberjack-console.driver';
+
+import { lumberjackConsoleDriverConfigToken } from './lumberjack-console-driver-config.token';
+import { LumberjackConsoleDriverConfig } from './lumberjack-console-driver.config';
+
+export function consoleDriverFactory(
+  logDriverOptions: LumberjackLogDriverOptions,
+  consoleDriverConfig: LumberjackConsoleDriverConfig,
+  console: LumberjackConsole
+): LumberjackConsoleDriver {
+  const config: LumberjackConsoleDriverConfig = {
+    ...logDriverOptions,
+    ...consoleDriverConfig,
+  };
+
+  return new LumberjackConsoleDriver(config, console);
+}
 
 @NgModule({
   providers: [
     {
-      provide: lumberjackLogDriverToken,
-      useClass: LumberjackConsoleDriver,
+      deps: [lumberjackLogDriverOptionsToken, lumberjackConsoleDriverConfigToken, lumberjackConsoleToken],
       multi: true,
+      provide: lumberjackLogDriverToken,
+      useFactory: consoleDriverFactory,
     },
   ],
 })

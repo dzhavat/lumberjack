@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { expectNgModuleToBeGuardedAgainstDirectImport, resolveDependency } from '@internal/test-util';
 import {
+  LumberjackConfigLevels,
   lumberjackConfigToken,
   LumberjackLevel,
   LumberjackLogDriver,
@@ -12,15 +13,32 @@ import {
 
 import { LumberjackConsoleDriver } from '../log-drivers/lumberjack-console.driver';
 
+import { LumberjackConsoleDriverConfig } from './lumberjack-console-driver.config';
 import { LumberjackConsoleDriverModule } from './lumberjack-console-driver.module';
+import { LumberjackConsoleDriverOptions } from './lumberjack-console-driver.options';
 
-const createConsoleDriver = ({
-  config,
-  isLumberjackModuleImportedFirst = true,
-}: {
-  config?: LumberjackLogDriverConfig;
-  isLumberjackModuleImportedFirst?: boolean;
-} = {}) => {
+function createConsoleOptions(): LumberjackConsoleDriverOptions {
+  return {
+    driverGUI: LumberjackConsoleDriver.name,
+  };
+}
+
+function createConsoleConfig(levels: LumberjackConfigLevels): LumberjackConsoleDriverConfig {
+  return {
+    driverGUI: LumberjackConsoleDriver.name,
+    levels,
+  };
+}
+
+const createConsoleDriver = (
+  {
+    config,
+    isLumberjackModuleImportedFirst = true,
+  }: {
+    config: LumberjackConsoleDriverConfig;
+    isLumberjackModuleImportedFirst?: boolean;
+  } = { config: createConsoleConfig([LumberjackLevel.Verbose]) }
+) => {
   TestBed.configureTestingModule({
     imports: [
       isLumberjackModuleImportedFirst ? LumberjackModule.forRoot() : [],
@@ -49,6 +67,7 @@ describe(LumberjackConsoleDriverModule.name, () => {
     it('registers the specified log driver configuration', () => {
       const expectedConfig: LumberjackLogDriverConfig = {
         levels: [LumberjackLevel.Error],
+        driverGUI: LumberjackConsoleDriver.name,
       };
 
       const consoleDriver = createConsoleDriver({ config: expectedConfig });
@@ -64,6 +83,7 @@ describe(LumberjackConsoleDriverModule.name, () => {
       const logConfig = resolveDependency(lumberjackConfigToken);
       const defaultLogDriverConfig: LumberjackLogDriverConfig = {
         levels: logConfig.levels,
+        driverGUI: LumberjackConsoleDriver.name,
       };
       expect(actualConfig).toEqual(defaultLogDriverConfig);
     });
@@ -71,6 +91,7 @@ describe(LumberjackConsoleDriverModule.name, () => {
     it('does register the specified log driver configuration when the lumberjack module is imported after the console driver module', () => {
       const expectedConfig: LumberjackLogDriverConfig = {
         levels: [LumberjackLevel.Debug],
+        driverGUI: LumberjackConsoleDriver.name,
       };
 
       const consoleDriver = createConsoleDriver({

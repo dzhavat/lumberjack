@@ -8,4 +8,9 @@ export interface LumberjackLogDriverConfig {
    *
    */
   readonly levels: LumberjackConfigLevels;
+
+  /**
+   * Driver Global Unique Identifier, necessary for driver filtering.
+   */
+  readonly driverGUI: string;
 }

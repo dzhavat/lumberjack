@@ -6,8 +6,8 @@ import { lumberjackFormatLog } from '../formatting/lumberjack-format-log';
 import { defaultDevelopmentLevels } from './default-development-levels';
 import { defaultProductionLevels } from './default-production-levels';
 import { lumberjackConfigToken } from './lumberjack-config.token';
-import { lumberjackLogDriverConfigToken } from './lumberjack-log-driver-config.token';
-import { LumberjackLogDriverConfig } from './lumberjack-log-driver.config';
+import { lumberjackLogDriverOptionsToken } from './lumberjack-log-driver-options.token';
+import { LumberjackLogDriverOptions } from './lumberjack-log-driver.options';
 import { lumberjackOptionsToken } from './lumberjack-options.token';
 import { LumberjackConfig } from './lumberjack.config';
 import { LumberjackOptions } from './lumberjack.options';
@@ -20,7 +20,7 @@ export function configFactory(options: LumberjackOptions = {}, isProductionEnvir
   };
 }
 
-export function logDriverConfigFactory({ levels }: LumberjackConfig): LumberjackLogDriverConfig {
+export function logDriverConfigFactory({ levels }: LumberjackConfig): LumberjackLogDriverOptions {
   return {
     levels,
   };
@@ -35,7 +35,7 @@ export function logDriverConfigFactory({ levels }: LumberjackConfig): Lumberjack
     },
     {
       deps: [lumberjackConfigToken],
-      provide: lumberjackLogDriverConfigToken,
+      provide: lumberjackLogDriverOptionsToken,
       useFactory: logDriverConfigFactory,
     },
   ],

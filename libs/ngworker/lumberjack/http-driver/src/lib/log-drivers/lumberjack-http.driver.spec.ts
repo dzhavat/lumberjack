@@ -65,6 +65,7 @@ describe(LumberjackHttpDriver.name, () => {
     origin: 'TEST_MODULE',
     retryOptions: { maxRetries: 5, delayMs: 250 },
     storeUrl: 'api/json',
+    driverGUI: LumberjackHttpDriver.name,
   };
 
   beforeEach(() => {
